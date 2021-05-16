@@ -7,6 +7,8 @@ export default function Consoles() {
     const [consoles, setConsoles] = useState([]);
     const [consoleID, setConsoleID] = useState(null);
 
+    const resetConsoleID = () => setConsoleID(null);
+
     useEffect(() => {   
         axios.get('http://csc225.mockable.io/consoles')
         .then((response) => {
@@ -16,32 +18,39 @@ export default function Consoles() {
 
     if(consoles.length === 0) {
         return (
-            <div>
-                Loading
+            <div className="text-center">
+                <div className="spinner-border text-danger" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </div>
             </div>
         )
     }
 
     if(!!consoleID){
         return (
-            <>
-                <button onClick={() => setConsoleID(null)}>Go back</button>
-                <Console id={consoleID} />
-            </>
+            <Console id={consoleID} goBack={resetConsoleID}/>
         )
     }
 
     return (
-        <div>
-            {consoles.map((c) => {
-                return (
-                    <p key={c.id}>
-                        {c.name}
-                        <img src={c.image} alt={c.name} />
-                        <button onClick={() => setConsoleID(c.id)}>go to console</button>
-                    </p>
-                )
-            })}
-        </div>
+        <>
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3">
+                {consoles.map((c) => {
+                    return (
+                        <div className="col mb-2" key={c.id}>
+                            <div className="card">
+                                <div className="card-header">
+                                    {c.name}
+                                </div>
+                                <img src={c.image} className="card-img-top p-1" alt={c.name} />
+                                <div className="card-body d-grid">
+                                    <button onClick={()=> setConsoleID(c.id)} className="btn btn-outline-dark">More Info</button>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })}
+            </div>
+        </>
     )
 }
